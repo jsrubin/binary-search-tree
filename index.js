@@ -5,26 +5,26 @@
  * @return {number}
  */
 const minDepth = (root, level = 0, minLevel = 0) => {
-    let min = minLevel
-    if (!root || Object.keys(root).length === 0) {
-        return min
+    let min = minLevel;
+    if (!root || Object.keys(root).length === 0 || root.length === 0) {
+        return min;
     }
-    level++
-    if (typeof root.val === 'number' && !root.left && !root.right) {
+    level++;
+    if (typeof root.value === 'number' && !root.left && !root.right) {
         if (min === 0) {
-            min = level
+            min = level;
         } else if (min > level) {
-            min = level
+            min = level;
         }
     }
     if (root.left) {
-        min = minDepth(root.left, level, min)
+        min = minDepth(root.left, level, min);
     }
     if (root.right) {
-        min = minDepth(root.right, level, min)
+        min = minDepth(root.right, level, min);
     }
-    return min
-}
+    return min;
+};
 
 /**
  * @param {TreeNode} root
@@ -32,27 +32,27 @@ const minDepth = (root, level = 0, minLevel = 0) => {
  * @return {boolean}
  */
 var hasPathSum = function (root, targetSum, currentSum = 0, result = false) {
-    let sum = currentSum
-    let match = result
-    if (!root || Object.keys(root).length === 0) {
-        return targetSum === sum
+    let sum = currentSum;
+    let match = result;
+    if (!root || Object.keys(root).length === 0 || root.length === 0) {
+        return false;
     }
 
     // add root.val to currentSum
-    sum = sum + root.val
+    sum = sum + root.value;
 
     // if we hit a leaf then check against target
-    if (typeof root.val === 'number' && !root.left && !root.right) {
-        return targetSum === sum ? true : result
+    if (typeof root.value === 'number' && !root.left && !root.right) {
+        return result ? result : targetSum === sum ? true : result;
     }
     if (root.left) {
-        match = hasPathSum(root.left, targetSum, sum, match)
+        match = hasPathSum(root.left, targetSum, sum, match);
     }
     if (root.right) {
-        match = hasPathSum(root.right, targetSum, sum, match)
+        match = hasPathSum(root.right, targetSum, sum, match);
     }
-    return match
-}
+    return match;
+};
 
 /* 
 class Node {
@@ -66,117 +66,125 @@ class Node {
 */
 // Function Declaration, named function, hoised and loaded before execution
 function Node(value) {
-    this.value = value
-    this.left = null
-    this.right = null
+    this.value = value;
+    this.left = null;
+    this.right = null;
 }
 
 // Function Expression, unamed function, stored as variable, not hoised
 const breadthFirstInsert = (tree, value, insert) => {
     if (tree == null) {
-        return insert(value)
+        return insert(value);
     }
 
-    let queue = [tree]
-    let done = false
+    let queue = [tree];
+    let done = false;
 
     // loop till we find null node
     while (queue.length > 0 && !done) {
-        let item = queue.shift()
-        let val = item && item.value
+        let item = queue.shift();
+        let val = item && item.value;
 
         if (item == null) {
-            item = insert(value)
-            done = true
-            continue
+            item = insert(value);
+            done = true;
+            continue;
         }
         // keep searching, move on to next node
         if (val == null) {
-            continue
+            continue;
         }
         if (item.left == null) {
-            item.left = insert(value)
-            done = true
-            continue
+            item.left = insert(value);
+            done = true;
+            continue;
         } else if (item.right == null) {
-            item.right = insert(value)
-            done = true
-            continue
+            item.right = insert(value);
+            done = true;
+            continue;
         }
         if (item.left != null) {
-            queue.push(item.left)
+            queue.push(item.left);
         }
         if (item.right != null) {
-            queue.push(item.right)
+            queue.push(item.right);
         }
     }
 
-    return tree
-}
+    return tree;
+};
 
 //var array = [5, 4, 8, 11, null, 13, 4, 7, 2, null, null, null, 1];
 const binarySearchTreeUnordered = (array) => {
     if (!array) {
-        return null
+        return null;
     }
     return array.reduce(
         (t, v) =>
             t ? breadthFirstInsert(t, v, (val) => new Node(val)) : new Node(v),
         null
-    )
-}
+    );
+};
 
-function BinarySearchTreeTraditional() {
-    this.root = null
-    this.add = (val) => {
-        const newNode = new Node(val)
-        if (!this.root) {
-            this.root = newNode
-            return this
+class BinarySearchTreeTraditional {
+    constructor(init) {
+        this.root = null;
+        if (init && Array.isArray(init) && init.length > 0) {
+            init.forEach((value) => {
+                this.add(value);
+            });
         }
-        let current = this.root
+    }
+
+    add(val) {
+        const newNode = new Node(val);
+        if (!this.root) {
+            this.root = newNode;
+            return this;
+        }
+        let current = this.root;
 
         const addNode = (side) => {
             if (!current[side]) {
-                current[side] = newNode
-                return this
+                current[side] = newNode;
+                return this;
             }
-            current = current[side]
-        }
+            current = current[side];
+        };
 
         while (true) {
-            if (val === current.val) {
-                return this
+            if (val === current.value) {
+                return this;
             }
-            if (val < current.val) addNode('left')
-            else addNode('right')
+            if (val < current.value) addNode('left');
+            else addNode('right');
         }
     }
-    this.smallest = () => {
-        let current = this.root
-        let found = 0
-        while (current && current.val) {
+    smallest() {
+        let current = this.root;
+        let found = 0;
+        while (current && current.value) {
             if (current.left != null) {
-                current = current.left
+                current = current.left;
             } else {
-                found = current.val
-                current = null
+                found = current.value;
+                current = null;
             }
         }
-        return found
+        return found;
     }
-    this.largest = () => {
-        let current = this.root
-        let found = 0
-        while (current && current.val) {
+    largest() {
+        let current = this.root;
+        let found = 0;
+        while (current && current.value) {
             if (current.right != null) {
-                current = current.right
+                current = current.right;
             } else {
-                found = current.val
-                current = null
+                found = current.value;
+                current = null;
             }
         }
-        return found
+        return found;
     }
 }
 
@@ -184,5 +192,5 @@ module.exports = {
     minDepth,
     hasPathSum,
     binarySearchTreeUnordered,
-    BinarySearchTreeTraditional,
-}
+    BinarySearchTreeTraditional
+};
